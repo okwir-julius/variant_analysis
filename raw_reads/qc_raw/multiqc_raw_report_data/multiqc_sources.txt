@@ -1,0 +1,9 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	ERR10445546_2	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445546_2_fastqc.zip
+FastQC	all_sections	ERR10445547_2	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445547_2_fastqc.zip
+FastQC	all_sections	ERR10445548_1	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445548_1_fastqc.zip
+FastQC	all_sections	ERR10445549_1	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445549_1_fastqc.zip
+FastQC	all_sections	ERR10445549_2	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445549_2_fastqc.zip
+FastQC	all_sections	ERR10445548_2	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445548_2_fastqc.zip
+FastQC	all_sections	ERR10445547_1	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445547_1_fastqc.zip
+FastQC	all_sections	ERR10445546_1	/Users/oj/Documents/bioinformatics/variant_calling/vc_project/raw_reads/qc_raw/ERR10445546_1_fastqc.zip

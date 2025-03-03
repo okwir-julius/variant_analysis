@@ -1,0 +1,18 @@
+name: variant_analysis  # name of the Conda environment
+
+channels:
+  - bioconda         # channel providing bioinformatics tools/packages
+  - conda-forge      # community-driven channel with additional packages and dependencies
+
+dependencies:
+  - fastqc           # quality control tool for high-throughput sequence data
+  - cutadapt         # trims adapter sequences from sequencing reads
+  - trim-galore      # wrapper for quality and adapter trimming (uses Cutadapt)
+  - multiqc          # aggregates results from various bioinformatics tools into a single report
+  - bwa              # maps sequences to a reference genome
+  - samtools         # manipulates SAM/BAM format files (e.g., sorting, indexing)
+  - picard           # mark duplicate reads
+  - bcftools         # variant calling and VCF/BCF file manipulation
+  - snpeff           # annotates genetic variants and predicts their effects
+  
+
