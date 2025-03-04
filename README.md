@@ -2,19 +2,7 @@ Automated bacterial variant analysis: Build a custom bash pipeline for
 variant calling, annotation, and effect prediction
 ================
 
-#### Okwir Julius - 2025-03-03
-
-## Table of Contents
-
-- [Introduction](##Introduction)
-- [Installation/setup](##installation/setup)
-- [Quality Control (Quality checks and
-  trimming)](##Quality%20Control%20(Quality%20checks%20and%20trimming))
-- [Alignment](##Alignment)
-- [Variant calling](##Variant%20calling)
-- [Variant Annotation and Effect
-  Prediction](##Variant%20Annotation%20and%20Effect%20Prediction)
-- [References](##References)
+#### Okwir Julius - 2025-03-04
 
 ## Introduction
 
@@ -38,8 +26,11 @@ reproducibility with bash scripting to ease routine variant analysis
 tasks. By the end, you will be able to:  
 1. Perform variant analysis on bacterial samples  
 2. Automate quality control, alignment, variant calling, annotation, and
-effect prediction steps with custom bash scripts 3. Build a single
-end-to-end automated custom bash pipeline for variant analysis
+effect prediction steps with custom bash scripts  
+3. Build a single end-to-end automated custom bash pipeline for variant
+analysis
+
+------------------------------------------------------------------------
 
 ## Installation/setup
 
@@ -71,8 +62,6 @@ bash ~/Anaconda3-2024.10-1-Linux-x86_64.sh
 conda --version
 ```
 
-------------------------------------------------------------------------
-
 ### Step 2: Set up a dedicated Conda environment for variant analysis
 
 Create an `environment.yml` file, which is a [YAML
@@ -86,10 +75,6 @@ nano environment.yml
 
 Add environment name, channels, and dependencies or tools as shown
 below, save the file and exit the editor.
-
-``` bash
-cat environment.yml
-```
 
     name: variant_analysis  # name of the Conda environment
 
@@ -148,27 +133,27 @@ as part of the tutorial.
 # Create the project directory 'vc_project' along with subdirectories 'raw_reads' and 'reference' 
 mkdir vc_project vc_project/raw_reads vc_project/reference
 
-# Change the working directory to 'vc_project'
-# vc_project is the working directory throughout the entire analysis
+# Change into the working directory 'vc_project'
+# Note: vc_project is the working directory throughout the entire analysis
 cd vc_project
 
 # Copy FASTQ sample files into the 'raw_reads' directory and the reference genome and annotation file into the 'reference' directory
 ```
 
-##### Directories and files
+##### Output
 
 ``` bash
 .
-├── raw_reads                   # Directory with raw FASTQ samples
-│   ├── ERR10445546_1.fastq.gz  # Forward reads for sample ERR10445546
-│   ├── ERR10445546_2.fastq.gz  # Reverse reads for sample ERR10445546
-│   ├── ERR10445547_1.fastq.gz  # Forward reads for sample ERR10445547
-│   ├── ERR10445547_2.fastq.gz  # Reverse reads for sample ERR10445547
-│   ├── ERR10445548_1.fastq.gz  # Forward reads for sample ERR10445548
-│   ├── ERR10445548_2.fastq.gz  # Reverse reads for sample ERR10445548
-│   ├── ERR10445549_1.fastq.gz  # Forward reads for sample ERR10445549
-│   └── ERR10445549_2.fastq.gz  # Reverse reads for sample ERR10445549
-└── reference                   # Directory with reference genome and annotation files
+├── raw_reads/                   # Directory with raw FASTQ samples
+│   ├── ERR10445546_1.fastq.gz  # Forward raw reads for sample ERR10445546
+│   ├── ERR10445546_2.fastq.gz  # Reverse raw reads for sample ERR10445546
+│   ├── ERR10445547_1.fastq.gz  # Forward raw reads for sample ERR10445547
+│   ├── ERR10445547_2.fastq.gz  # Reverse raw reads for sample ERR10445547
+│   ├── ERR10445548_1.fastq.gz  # Forward raw reads for sample ERR10445548
+│   ├── ERR10445548_2.fastq.gz  # Reverse raw reads for sample ERR10445548
+│   ├── ERR10445549_1.fastq.gz  # Forward raw reads for sample ERR10445549
+│   └── ERR10445549_2.fastq.gz  # Reverse raw reads for sample ERR10445549
+└── reference/                   # Directory with reference genome and annotation file
     ├── Salmonella_enterica.fasta  # Reference genome in FASTA format
     └── Salmonella_enterica.gb     # Reference genome in GenBank format (Annotation file)
 ```
@@ -178,6 +163,8 @@ cd vc_project
 ## The workflow
 
 ![](images/vc_workflow.png)
+
+------------------------------------------------------------------------
 
 ## Quality Control (Quality checks and trimming)
 
@@ -212,8 +199,6 @@ following tools for quality control.
   `Trim Galore` is a wrapper around `cutadapt` and includes automated
   adapter detection
 
-------------------------------------------------------------------------
-
 ### Step 1: Assess the quality of the raw sequencing reads with FastQC
 
 Create the directory structure for storing the outputs of various stages
@@ -224,36 +209,36 @@ of the quality control process:
 mkdir -p raw_reads/qc_raw trimmed_reads/qc_trimmed
 ```
 
-Command and options:
+Explanation:
 
-- `mkdir`: Command to create directories.  
-- `-p`: Ensures that parent directories are created if they don’t exist
-  and suppresses errors if directories already exist.
+- `mkdir`: Command to create directories  
+- `-p`: Ensure that parent directories are created if they don’t exist
+  and suppress errors if directories already exist.
 
-##### Directories
+##### Output
 
 ``` bash
-.
-├── raw_reads
-│   └── qc_raw
-├── reference
-└── trimmed_reads
-    └── qc_trimmed
+raw_reads/              # Directory with raw FASTQ files
+└── qc_raw/             # Subdirectory to store FastQC reports and MultiQC report for raw reads
+trimmed_reads/          # Directory for trimmed FASTQ files
+└── qc_trimmed/         # Subdirectory to store FastQC reports and MultiQC report for trimmed reads
 ```
 
 Next, run FastQC on all raw FASTQ samples to assess their quality. Note
-that FastQC assesses each file separately, so the forward and reverse
-reads for each sample are evaluated independently.
+that FastQC assesses each file separately, so the quality of the forward
+and reverse reads for each sample are evaluated independently.
 
 ``` bash
 # Perform quality checks on raw reads
 fastqc -o raw_reads/qc_raw raw_reads/*.fastq.gz
 ```
 
-Command and options:
+Explanation:
 
 - `fastqc`: Command to perform quality checks
-- `-o`: Specifies the output directory for FastQC results.
+- `-o raw_reads/qc_raw`: Set the output directory for FastQC reports
+- `raw_reads/*.fastq.gz`: Process all the FASTQ files in the raw_reads
+  directory
 
 Finally, aggregate the FastQC reports using MultiQC.
 
@@ -262,27 +247,49 @@ Finally, aggregate the FastQC reports using MultiQC.
 multiqc -f -o raw_reads/qc_raw -n multiqc_raw_report.html raw_reads/qc_raw
 ```
 
-Command and options:
+Explanation:
 
 - `multiqc`: Command to combines multiple FastQC reports into a single
   HTML summary  
-- `-f`: Overwrite any existing MultiQC report.
-- `-o`: Specifies the output directory for the MultiQC report.
-- `-n`: Specifies the name of the multiqc report
+- `-f`: Overwrite any existing MultiQC report
+- `-o raw_reads/qc_raw`: Set the output directory for the MultiQC report
+- `-n multiqc_raw_report.html`: Assign a custom name to the multiqc
+  report
+- `raw_reads/qc_raw`: Specify the input directory containing the FASTQC
+  reports to be aggregated
 
-##### Directories
+##### Output
 
 ``` bash
-.
-├── raw_reads
-│   └── qc_raw
-│       └── multiqc_raw_report_data
-├── reference
-└── trimmed_reads
-    └── qc_trimmed
+raw_reads/                   # Directory containing raw FASTQ files and their FastQC reports
+├── ERR10445546_1.fastq.gz   # Forward raw reads for sample ERR10445546
+├── ERR10445546_2.fastq.gz   # Reverse raw reads for sample ERR10445546
+├── ERR10445547_1.fastq.gz   # " " "
+├── ERR10445547_2.fastq.gz   # " " "
+├── ERR10445548_1.fastq.gz   # " " "
+├── ERR10445548_2.fastq.gz   # " " "
+├── ERR10445549_1.fastq.gz   # " " "
+├── ERR10445549_2.fastq.gz   # " " "
+└── qc_raw/                         # Subdirectory for FastQC reports on raw FASTQ files
+    ├── ERR10445546_1_fastqc.html   # FastQC HTML report for ERR10445546 forward reads
+    ├── ERR10445546_1_fastqc.zip    # FastQC archive for ERR10445546 forward reads
+    ├── ERR10445546_2_fastqc.html   # FastQC HTML report for ERR10445546 reverse reads
+    ├── ERR10445546_2_fastqc.zip    # FastQC archive for ERR10445546 reverse reads
+    ├── ERR10445547_1_fastqc.html   # " " "
+    ├── ERR10445547_1_fastqc.zip    # " " "
+    ├── ERR10445547_2_fastqc.html   # " " "
+    ├── ERR10445547_2_fastqc.zip    # " " "
+    ├── ERR10445548_1_fastqc.html   # " " "
+    ├── ERR10445548_1_fastqc.zip    # " " "
+    ├── ERR10445548_2_fastqc.html   # " " "
+    ├── ERR10445548_2_fastqc.zip    # " " "
+    ├── ERR10445549_1_fastqc.html   # " " "
+    ├── ERR10445549_1_fastqc.zip    # " " "
+    ├── ERR10445549_2_fastqc.html   # " " "
+    ├── ERR10445549_2_fastqc.zip    # " " "
+    ├── multiqc_raw_report.html     # Aggregated MultiQC report for all raw FastQC reports
+    └── multiqc_raw_report_data     # Supporting data for the aggregated MultiQC report
 ```
-
-#### Output
 
 Key multiQC aggregated report sections from FastQC quality checks on all
 the raw sequencing reads
@@ -319,11 +326,9 @@ might not be strictly necessary. However, since the goal of this
 tutorial is to build an end-to-end automated variant analysis pipeline,
 This step is included.
 
-------------------------------------------------------------------------
-
 ### Step 2: Trim low-quality bases and remove adapter sequences with Trim Galore
 
-After reviewing the Quality control reports, clean the data by trimming
+After reviewing the quality control reports, clean the data by trimming
 low-quality bases, removing adapter sequences, deduplication, etc if
 necessary. Use Trim Galore to process the paired-end reads. Start by
 running Trim Galore with a single sample to understand the command
@@ -338,18 +343,18 @@ trim_galore --paired \
             raw_reads/ERR10445546_1.fastq.gz raw_reads/ERR10445546_2.fastq.gz
 ```
 
-Command and options:
+Explanation:
 
 - `trim_galore`: Automatically detects and removes adapters, trims
-  low-quality bases, and filters out short sequences.  
-- `--paired`: Specifies paired-end mode to process the two input files
-  simultaneously.  
-- `--quality 20`: Trims bases with a Phred quality score \< 20 (99% base
-  call accuracy).  
-- `--output_dir`: Saves the trimmed FASTQ files in the `trimmed_reads`
-  directory.
-
-------------------------------------------------------------------------
+  low-quality bases, and filters out short sequences
+- `--paired`: Specify paired-end mode to process the two input files
+  simultaneously  
+- `--quality 20`: Trim bases with a Phred quality score \< 20 (99% base
+  call accuracy)
+- `--output_dir trimmed_reads`: Save the trimmed FASTQ files in the
+  `trimmed_reads` directory  
+- `raw_reads/ERR10445546_1.fastq.gz`: Specify the input forward reads
+- `raw_reads/ERR10445546_2.fastq.gz`: Specify the input reverse reads
 
 ### Step 3: Reassess the quality of the trimmed reads with FastQC
 
@@ -375,32 +380,7 @@ fastqc -o trimmed_reads/qc_trimmed trimmed_reads/*.fq.gz
 multiqc -o trimmed_reads/qc_trimmed -n multiqc_trimmed_report.html trimmed_reads/qc_trimmed
 ```
 
-##### Directories
-
-``` bash
-.
-├── raw_reads
-│   └── qc_raw
-│       └── multiqc_raw_report_data
-├── reference
-└── trimmed_reads
-    └── qc_trimmed
-        ├── multiqc_trimmed_report_data
-        └── trim_galore_report_data
-```
-
-##### Output
-
-Key multiqc report sections from FastQC quality checks on all trimmed
-sequencing reads
-
-![](images/multiqc_trimmed_qualityscores.png)
-
-![](images/multiqc_trimmed_duplicates.png)
-
-![](images/multiqc_trimmed_adaptor_content.png) Note that not much has
-changed after trimming because the raw reads were already of acceptable
-quality for this analysis. —
+------------------------------------------------------------------------
 
 ### Automate Quality Control with a bash script
 
@@ -540,6 +520,67 @@ from the Quality control section and should be familiar.
     echo "Inspect trimmed reads report in: $qc_trim_dir/multiqc_trimmed_report.html."
     echo "Inspect trim-galore report in: $qc_trim_dir/trim_galore_report.html."
 
+Run the bash script using the command `bash automate_qc.sh` from the
+working directory (vc_project). Do not forget that `vc_project` is the
+working directory throughout the entire analysis as previously stated.
+
+------------------------------------------------------------------------
+
+##### Output
+
+``` bash
+trimmed_reads/                  # Directory containing trimmed FASTQ files and their FastQC reports
+├── ERR10445546_1_val_1.fq.gz   # Forward trimmed reads for sample ERR10445546
+├── ERR10445546_2_val_2.fq.gz   # Reverse trimmed reads for sample ERR10445546
+├── ERR10445547_1_val_1.fq.gz   # " " "
+├── ERR10445547_2_val_2.fq.gz   # " " "
+├── ERR10445548_1_val_1.fq.gz   # " " "
+├── ERR10445548_2_val_2.fq.gz   # " " "
+├── ERR10445549_1_val_1.fq.gz   # " " "
+├── ERR10445549_2_val_2.fq.gz   # " " "
+└── qc_trimmed/                                      # Subdirectory for FastQC reports on trimmed reads
+    ├── ERR10445546_1.fastq.gz_trimming_report.txt   # Trim Galore report for ERR10445546 forward reads
+    ├── ERR10445546_1_val_1_fastqc.html              # FastQC HTML report for ERR10445546 forward reads
+    ├── ERR10445546_1_val_1_fastqc.zip               # FastQC archive for ERR10445546 forward reads
+    ├── ERR10445546_2.fastq.gz_trimming_report.txt   # Trim Galore report for ERR10445546 reverse reads
+    ├── ERR10445546_2_val_2_fastqc.html              # FastQC HTML report for ERR10445546 reverse reads
+    ├── ERR10445546_2_val_2_fastqc.zip               # FastQC archive for ERR10445546 reverse reads
+    ├── ERR10445547_1.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445547_1_val_1_fastqc.html              # " " "
+    ├── ERR10445547_1_val_1_fastqc.zip               # " " "
+    ├── ERR10445547_2.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445547_2_val_2_fastqc.html              # " " "
+    ├── ERR10445547_2_val_2_fastqc.zip               # " " "
+    ├── ERR10445548_1.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445548_1_val_1_fastqc.html              # " " "
+    ├── ERR10445548_1_val_1_fastqc.zip               # " " "
+    ├── ERR10445548_2.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445548_2_val_2_fastqc.html              # " " "
+    ├── ERR10445548_2_val_2_fastqc.zip               # " " "
+    ├── ERR10445549_1.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445549_1_val_1_fastqc.html              # " " "
+    ├── ERR10445549_1_val_1_fastqc.zip               # " " "
+    ├── ERR10445549_2.fastq.gz_trimming_report.txt   # " " "
+    ├── ERR10445549_2_val_2_fastqc.html              # " " "
+    ├── ERR10445549_2_val_2_fastqc.zip               # " " "
+    ├── multiqc_trimmed_report.html                # Aggregated MultiQC report for all trimmed FastQC reports
+    ├── multiqc_trimmed_report_data                # Supporting data for the aggregated MultiQC report
+    ├── trim_galore_report.html                    # Aggregated Trim Galore report for all trimmed reads
+    └── trim_galore_report_data                    # Supporting data for the Trim Galore report
+```
+
+Key multiqc report sections from FastQC quality checks on all trimmed
+sequencing reads
+
+![](images/multiqc_trimmed_qualityscores.png)
+
+![](images/multiqc_trimmed_duplicates.png)
+
+![](images/multiqc_trimmed_adaptor_content.png)
+
+Note that not much has changed after trimming because the raw reads were
+already of acceptable quality for this analysis.
+
 ------------------------------------------------------------------------
 
 ### Alternative Tools for Quality Control
@@ -568,15 +609,15 @@ from the Quality control section and should be familiar.
 
 ### Quality Control tips
 
-1.  **Review QC Metrics Carefully**: Pay attention to key metrics like
+1.  **Review QC metrics carefully**: Pay attention to key metrics like
     per-base sequence quality, adapter contamination, and duplicate
     sequences. These can provide insights into potential issues with the
     sequencing data.
-2.  **Adjust Trimming Parameters**: If you observe persistent
+2.  **Adjust trimming parameters**: If you observe persistent
     low-quality regions in the reads, consider increasing the quality
     threshold (e.g., `--quality 30`). However, be cautious not to
     over-trim, as excessive trimming may remove valuable data.  
-3.  **Use Custom Adapters**: If your sequencing platform or library
+3.  **Use custom adapters**: If your sequencing platform or library
     preparation introduces unique adapters, specify them explicitly in
     Trim Galore using the `--adapter` option.
 
@@ -606,8 +647,6 @@ mkdir -p alignment alignment/stats
 bwa index reference/Salmonella_enterica.fasta
 ```
 
-------------------------------------------------------------------------
-
 ### Step 2: Align Trimmed Reads to the Reference Genome
 
 After indexing, align the trimmed paired-end reads to the reference
@@ -619,16 +658,14 @@ bwa mem -t 4 reference/Salmonella_enterica.fasta \
     > alignment/ERR10445546.sam
 ```
 
-Command and options:
+Explanation:
 
-- `bwa mem`: Runs the BWA-MEM algorithm, optimized for long reads
-- `-t 4`: Specifies the number of threads for parallel processing
+- `bwa mem`: Run the BWA-MEM algorithm, optimized for long reads
+- `-t 4`: Specify the number of threads for parallel processing
 - `reference/Salmonella_enterica.fasta`: Path to the indexed reference
   genome
-- `trimmed_reads/ERR10445546_1_val_1.fq.gz`: Forward (1) trimmed reads
-- `trimmed_reads/ERR10445546_2_val_2.fq.gz`: Reverse (2) trimmed reads
-
-------------------------------------------------------------------------
+- `trimmed_reads/ERR10445546_1_val_1.fq.gz`: Input Forward trimmed reads
+- `trimmed_reads/ERR10445546_2_val_2.fq.gz`: Input Reverse trimmed reads
 
 ### Step 3: Post-Alignment Processing
 
@@ -652,7 +689,7 @@ picard MarkDuplicates -INPUT alignment/ERR10445546.sorted.bam \
                       -METRICS_FILE alignment/stats/ERR10445546.dedup.txt
 ```
 
-Command and options:
+Explanation:
 
 - `samtools view -S -b`: Converts the SAM file to BAM format, reducing
   file size and improving processing speed
@@ -673,9 +710,9 @@ distinguishing PCR duplicate reads from true independent reads.
 samtools index alignment/ERR10445546.sorted.dedup.bam
 ```
 
-Command and options: - `samtools index`: Creates an index for the sorted
-BAM file, enabling rapid access to specific genomic regions without
-scanning the entire BAM file.
+Explanation: - `samtools index`: Creates an index for the sorted BAM
+file, enabling rapid access to specific genomic regions without scanning
+the entire BAM file.
 
 #### Generate Alignment Statistics
 
@@ -693,46 +730,21 @@ samtools stats alignment/ERR10445546.sorted.dedup.bam > alignment/stats/ERR10445
 multiqc -f -o alignment/stats/ -n multiqc_alignment_report.html alignment/stats/
 ```
 
-Command and options:
+Explanation:
 
 - `samtools flagstat`: Produces a summary of the alignment, including
   the total number of reads, mapped reads, and duplicates  
 - `samtools stats`: Generates a detailed statistical report, including
   metrics like mapping quality, insert size metrics, and error rates
 
-#### Directories
-
-``` bash
-.
-├── alignment
-│   └── stats
-│       ├── multiqc_alignment_report_data
-│       └── multiqc_data
-├── raw_reads
-│   └── qc_raw
-│       └── multiqc_raw_report_data
-├── reference
-└── trimmed_reads
-    └── qc_trimmed
-        ├── multiqc_trimmed_report_data
-        └── trim_galore_report_data
-```
-
-#### Output
-
-Multiqc report sections from alignment and post alignment processing of
-all trimmed sequencing reads
-
-![](images/samtools_alignment_stats.png)
-
-## ![](images/picard_deduplication_stats.png)
+------------------------------------------------------------------------
 
 ### Automate aligment with a bash script
 
-To ensure that we process multiple samples, the entire alignment process
-can be automated with a bash script as shown below. The script
-incorporates most commands from the Alignment section and should be
-familiar.
+To ensure that we process multiple samples, write a bash script
+(automate_algnmnt.sh) to automate the entire alignment process. Details
+of the script are shown below. The script incorporates most commands
+from the Alignment section and should be familiar.
 
     #!/bin/bash
 
@@ -886,6 +898,60 @@ familiar.
 
         
 
+Run the bash script using the command `bash automate_algnmnt.sh`
+
+------------------------------------------------------------------------
+
+#### Output
+
+``` bash
+reference/
+├── Salmonella_enterica.fasta          # Reference genome in FASTA format
+├── Salmonella_enterica.fasta.amb      # BWA index file: ambiguous bases
+├── Salmonella_enterica.fasta.ann      # BWA index file: annotations for the reference
+├── Salmonella_enterica.fasta.bwt      # BWA index file: Burrows-Wheeler Transform index
+├── Salmonella_enterica.fasta.pac      # BWA index file: PacBio-specific index data
+├── Salmonella_enterica.fasta.sa       # BWA index file: suffix array
+└── Salmonella_enterica.gb             # Reference genome in GenBank format (Annotation file)
+
+alignment/
+├── ERR10445546.sorted.bam             # Sorted BAM file for sample ERR10445546
+├── ERR10445546.sorted.dedup.bam       # Deduplicated BAM file for sample ERR10445546
+├── ERR10445546.sorted.dedup.bam.bai   # BAM index for deduplicated sample ERR10445546
+├── ERR10445547.sorted.bam             # " " "
+├── ERR10445547.sorted.dedup.bam       # " " "
+├── ERR10445547.sorted.dedup.bam.bai   # " " "
+├── ERR10445548.sorted.bam             # " " "
+├── ERR10445548.sorted.dedup.bam       # " " "
+├── ERR10445548.sorted.dedup.bam.bai   # " " "
+├── ERR10445549.sorted.bam             # " " "
+├── ERR10445549.sorted.dedup.bam       # " " "
+├── ERR10445549.sorted.dedup.bam.bai   # " " "
+├── bam_list.txt                       # List of the deduplicated BAM files for use in variant calling
+└── stats/                             # Subdirectory for alignment statistics and QC reports
+    ├── ERR10445546.dedup.txt          # Duplicate marking metrics for sample ERR10445546
+    ├── ERR10445546.flagstat           # Alignment summary statistics for sample ERR10445546
+    ├── ERR10445546.stats              # Detailed alignment statistics for sample ERR10445546
+    ├── ERR10445547.dedup.txt          # " " "
+    ├── ERR10445547.flagstat           # " " "
+    ├── ERR10445547.stats              # " " "
+    ├── ERR10445548.dedup.txt          # " " "
+    ├── ERR10445548.flagstat           # " " "
+    ├── ERR10445548.stats              # " " "
+    ├── ERR10445549.dedup.txt          # " " "
+    ├── ERR10445549.flagstat           # " " "
+    ├── ERR10445549.stats              # " " "
+    ├── multiqc_alignment_report.html  # Aggregated MultiQC report for alignment metrics
+    └── multiqc_alignment_report_data  # Supporting data files for the MultiQC report
+```
+
+Multiqc report sections from alignment and post alignment processing of
+all trimmed sequencing reads
+
+![](images/samtools_alignment_stats.png)
+
+![](images/picard_deduplication_stats.png)
+
 ------------------------------------------------------------------------
 
 ### Alternative Tools for Alignment
@@ -901,12 +967,12 @@ familiar.
 
 ### Tips for Alignment
 
-1.  **Use Sufficient Threads**: Adjust the `-t` option in `bwa mem` to
+1.  **Use sufficient threads**: Adjust the `-t` option in `bwa mem` to
     match the number of available CPU cores for faster alignment.
-2.  **Monitor Output File Sizes**: SAM files are large; convert to BAM
+2.  **Monitor output file sizes**: SAM files are large; convert to BAM
     format immediately to save storage space.
-3.  **Check for Read Group Information**: Add read group information
-    (e.g., `@RG`) during alignment for multi-sample workflows.
+3.  **Add Read Group fnformation**: Add read group information (e.g.,
+    `@RG`) during alignment for multi-sample workflows.
 
 ------------------------------------------------------------------------
 
@@ -942,7 +1008,7 @@ To call variants, first generate a pileup of aligned reads using
 bcftools mpileup -Ou -f reference/Salmonella_enterica.fasta alignment/ERR10445546.sorted.dedup.bam > variants/variants.bcf
 ```
 
-Command and options:
+Explanation:
 
 - `bcftools mpileup`: Computes the pileup of reads and generates an
   intermediate BCF file
@@ -958,7 +1024,7 @@ Use `bcftools call` to identify SNPs and indels from the raw BCF file.
 bcftools call -mv --ploidy 1 -Ob -o variants/called_variants.bcf variants/variants.bcf
 ```
 
-Command and options:
+Explanation:
 
 - `bcftools call`: Calls genetic variants from the BCF file.
 - `-mv`: Calls both SNPs and indels, allowing for multiallelic sites.
@@ -975,7 +1041,7 @@ Since the VCF file is more widely used, convert the BCF file to VCF.
 bcftools view variants/called_variants.bcf > variants/called_variants.vcf
 ```
 
-Command and options:
+Explanation:
 
 - `bcftools view`: Converts the BCF file to VCF format, making it
   human-readable
@@ -1005,22 +1071,10 @@ bcftools stats $variants_dir/called_variants.vcf.gz > $variants_dir/bcf_stats.tx
 
 ------------------------------------------------------------------------
 
-##### Directory and files
-
-``` bash
-variants
-├── bcf_stats.txt              # Statistics from variant calling 
-├── called_variants.bcf        # Called variants in binary BCF format generated by bcftools call
-├── called_variants.vcf        # Human-readable VCF file converted from the binary BCF output
-├── called_variants.vcf.gz     # Compressed VCF file (BGZF format) for efficient storage and downstream processing
-├── called_variants.vcf.gz.csi # Index file for the compressed VCF, enabling rapid access to variant data
-└── variants.bcf               # Raw BCF file produced by bcftools mpileup from the alignment data
-```
-
 ### Automate variant calling with a bash script
 
-To call variants from multiple samples, the variant calling process can
-be automated with a bash script as shown below.
+To call variants from multiple samples, automate the variant calling
+process by writing a bash script (automate_vc.sh) as shown below.
 
     #!/bin/bash
 
@@ -1091,6 +1145,22 @@ be automated with a bash script as shown below.
     echo "========== Variant calling completed successfully =========="
     echo "Check VCF file and statistics in: $variants_dir"
 
+Run the script using the command `bash automate_vc.sh`
+
+------------------------------------------------------------------------
+
+##### output
+
+``` bash
+variants/
+├── bcf_stats.txt              # Statistics from variant calling 
+├── called_variants.bcf        # Called variants in binary BCF format generated by bcftools call
+├── called_variants.vcf        # Human-readable VCF file converted from the binary BCF output
+├── called_variants.vcf.gz     # Compressed VCF file (BGZF format) for efficient storage and downstream processing
+├── called_variants.vcf.gz.csi # Index file for the compressed VCF, enabling rapid access to variant data
+└── variants.bcf               # Raw BCF file produced by bcftools mpileup from the alignment data
+```
+
 ------------------------------------------------------------------------
 
 ### Alternative Tools for Variant Calling
@@ -1109,14 +1179,16 @@ be automated with a bash script as shown below.
     - High-sensitivity variant caller that can be optimized to cater for
       low quality variants.
 
+------------------------------------------------------------------------
+
 ### Tips for Variant calling
 
-1.  **Adjust Variant Calling Sensitivity**: Use `--variants-only` to
+1.  **Adjust variant calling sensitivity**: Use `--variants-only` to
     remove non-variant sites
-2.  **Compress and Index VCF for Storage Efficiency**: Convert the VCF
+2.  **Compress and index VCF for storage efficiency**: Convert the VCF
     file to BGZF format using `bcftools view -Oz` and index it with
     `bcftools index`.
-3.  **Check Variant Quality**: Use `bcftools filter` to retain
+3.  **Check variant quality**: Use `bcftools filter` to retain
     high-confidence variants (e.g., `QUAL > 30`).
 
 ------------------------------------------------------------------------
@@ -1124,17 +1196,18 @@ be automated with a bash script as shown below.
 ## Variant Annotation and Effect Prediction
 
 After variant calling, the next step is to annotate the variants and
-predict their functional effects. We will use SnpEff for annotation and
-effect prediction, and BCFtools for filtering variants of interest.
+predict their functional effects. We will use
+[SnpEff](https://pcingola.github.io/SnpEff/) for annotation and effect
+prediction, and BCFtools for filtering variants of interest.
 
 ![](images/variant_annotation_process.png)
 
-### Step 1: Build a Custom Database with SnpEff
+### Step 1: Build a custom database with SnpEff
 
-[SnpEff](https://pcingola.github.io/SnpEff/) requires an annotation
-database to annotate variants. If a database for your organism is not
-available (very unlikely), you need to build a custom database. We will
-use the GenBank reference file to build a custom database.
+SnpEff requires an annotation database to annotate variants. If a
+database for your organism is not available (very unlikely), you need to
+build a custom database. We will use the GenBank reference file to build
+a custom database.
 
 #### Copy and modify SnpEff configuration file
 
@@ -1149,10 +1222,10 @@ is not tampered with.
 mkdir -p annotation
 
 # Copy SnpEff configuration file from snpEff installation directory into the annotation directory
-cp /Users/oj/anaconda3/pkgs/snpeff-5.2-hdfd78af_1/share/snpeff-5.2-1/snpEff.config annotation/snpEff_copy.config
+cp /path/to/anaconda3/pkgs/snpeff-5.2-hdfd78af_1/share/snpeff-5.2-1/snpEff.config annotation/snpEff_copy.config
 ```
 
-#### Edit the Configuration File
+#### Edit the configuration file
 
 “Add an entry” for the organism at the end of the copied configuration
 file.
@@ -1163,11 +1236,11 @@ echo "# Salmonella enterica" >> annotation/snpEff_copy.config
 echo "Salmonella_enterica.genome : Salmonella enterica, complete genome" >> annotation/snpEff_copy.config
 ```
 
-#### Prepare Data Directory and Copy Reference Genome
+#### Prepare data directory and annotation file
 
-For this approach, SnpEff requires the reference genome in **GenBank
+For this approach, SnpEff requires the annotation file in **GenBank
 (.gbk) format**. Create a directory for the organism and place the
-reference file inside this directory.
+annotation file inside this directory.
 
 ``` bash
 # Create directory structure for custom database
@@ -1177,7 +1250,7 @@ mkdir -p annotation/data annotation/data/Salmonella_enterica
 cp reference/Salmonella_enterica.gb annotation/data/Salmonella_enterica/genes.gbk
 ```
 
-#### Build the Custom Database
+#### Build the custom database
 
 Now, build the SnpEff database using the **GenBank reference file**.
 
@@ -1186,7 +1259,7 @@ Now, build the SnpEff database using the **GenBank reference file**.
 snpEff build -genbank -c annotation/snpEff_copy.config -v Salmonella_enterica
 ```
 
-Command and options:
+Explanation:
 
 - `snpEff build`: Builds a custom annotation database.
 - `-genbank`: Specifies that the reference is in GenBank format.
@@ -1196,9 +1269,7 @@ Command and options:
 - `Salmonella_enterica`: The custom genome name added in the
   configuration file.
 
-------------------------------------------------------------------------
-
-### Step 2: Annotate and Predict Effect of Variants
+### Step 2: Annotate and predict effect of variants
 
 Once the database is built, we can annotate the called variants (VCF
 file).
@@ -1208,23 +1279,24 @@ file).
 snpEff ann -o vcf -c annotation/snpEff_copy.config Salmonella_enterica /variants/called_variants.vcf.gz > annotation/ann_called_variants.vcf
 ```
 
-Command and options:
+Explanation:
 
-- `snpEff ann`: Runs annotation on the variant file.
-- `-o vcf`: Outputs results in VCF format.
+- `snpEff ann`: Runs annotation on the variant file
+- `-o vcf`: Outputs results in VCF format
 - `-c annotation/snpEff_copy.config`: Uses the custom database
-  configuration.
+  configuration file
 - `Salmonella_enterica`: The genome name specified during database
-  creation.
-- `../variants/called_variants.vcf.gz`: The input VCF file from variant
-  calling.
+  creation
+- `/variants/called_variants.vcf.gz`: The input VCF file from variant
+  calling
 
 ------------------------------------------------------------------------
 
 ### Automate variant annotation and effect prediction
 
 We can automate the entire process of annotation and effect prediction
-using a custom database with a bash script as shown below.
+using a custom database with a bash script (automate_ann.effect.sh) as
+shown below.
 
     #!/bin/bash
 
@@ -1316,6 +1388,32 @@ using a custom database with a bash script as shown below.
     echo "Annotation and effect prediction completed successfully."
     echo "Check final VCF file in $annotation_dir/ann_called_variants.vcf"
     echo "Check snpEff and Genes summary files in $annotation_dir directory"
+
+Run the script using the command `bash automate_ann.effect.sh`
+
+------------------------------------------------------------------------
+
+##### Output
+
+``` bash
+annotation/                          # Directory for variant annotation outputs and database
+├── ann_called_variants.vcf          # Final annotated VCF file with predicted variant effects
+├── data/                            # Subdirectory with the custom snpEff database data
+│   └── Salmonella_enterica/         # Custom database subdirectory for Salmonella enterica
+│       ├── genes.gbk                # GenBank file used to build the custom snpEff database
+│       ├── sequence.CP000026.1.bin  # Binary file containing sequence data for snpEff
+│       └── snpEffectPredictor.bin   # Binary file with precomputed effect prediction data
+├── snpEff_summary.genes.txt         # Text summary report of gene-level annotations by snpEff
+├── snpEff_summary.html              # HTML summary report providing an overview of variant annotations
+└── snpeff_copy.config               # Copy of snpEff configuration file used to build the custom database
+```
+
+snpEff HTML report sections from variant annotation and effect
+prediction.
+
+![](images/snpEff_summary.png)
+
+## ![](images/variants_summary.png)
 
 ### Step 3: Filter variants of interest with BCFtools
 
@@ -1695,6 +1793,8 @@ analysis pipeline, consider making the following improvements.
 3.  **Adopt workflow management tools**. Consider using workflow
     managers like `Snakemake` or `Nextflow`. These tools can be used to
     create reproducible and scalable data analysis pipelines.
+
+------------------------------------------------------------------------
 
 ## References
 
