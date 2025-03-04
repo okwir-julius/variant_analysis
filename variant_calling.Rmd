@@ -878,12 +878,13 @@ Once comfortable with the commands and different steps in variant analysis pipel
 #### Have questions or need assistance?
 If you need help or have any queries regarding this tutorial or pipeline, please don't hesitate to reach out:
 
-* Email: amjuliusokwir@gmail.com
+* Email: amjuliusokwir@gmail.com 
 * GitHub Issues: Report issues or suggest improvements [here](https://github.com/okwir-julius/variant_analysis/issues).
 
 ---
 
 ## References
+
 1. Andrews, S. (2010). FastQC: A quality control tool for high throughput sequence data. Retrieved March 4, 2025, from https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ 
 
 2. Broad Institute. (2019). Picard Toolkit [Computer software]. Retrieved February 18, 2025, from http://broadinstitute.github.io/picard/ 
@@ -904,6 +905,7 @@ If you need help or have any queries regarding this tutorial or pipeline, please
 
 10. Zverinova, S., & Guryev, V. (2022). Variant calling: Considerations, practices, and developments. Human Mutation, 43(8), 976–985. https://doi.org/10.1002/humu.24311
 
+---
 
 
 
