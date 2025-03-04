@@ -1389,7 +1389,7 @@ shown below.
     echo "Check final VCF file in $annotation_dir/ann_called_variants.vcf"
     echo "Check snpEff and Genes summary files in $annotation_dir directory"
 
-Run the script using the command `bash automate_ann.effect.sh`
+Run the script using the command `bash automate_ann.effect.sh`.
 
 ------------------------------------------------------------------------
 
@@ -1429,11 +1429,6 @@ bcftools view -v snps annotation/ann_called_variants.vcf > annotation/snps_only.
 
 # Extract indels
 bcftools view -v indels annotation/ann_called_variants.vcf > annotation/indels_only.vcf
-
-# confirm the number of variants
-cat annotation/snps_only.vcf | grep -v "^#" | wc -l
-
-cat annotation/indels_only.vcf | grep -v "^#" | wc -l
 ```
 
 #### Example 2: Filter Variants by impact
@@ -1505,20 +1500,23 @@ bcftools filter -i 'TYPE="snp" && INFO/ANN~"HIGH" && INFO/ANN~"missense_variant"
 1.  **Ensure database completeness**. Check that the GenBank file
     contains CDS annotations; otherwise, functional predictions may be
     missing
-2.  **Combine Multiple Filters**. Use `&& (AND)` and `|| (OR)`
+2.  **Combine multiple filters**. Use `&& (AND)` and `|| (OR)`
     conditions in `bcftools filter` to refine your variant selection.
-3.  **Create and Use a Copy of the snpEff Configuration File**. Before
+3.  **Create and use a copy of the snpEff configuration file**. Before
     making any modifications, create a duplicate of the snpEff
     configuration file. Customize and use this copied version for your
     analysis, while preserving the original file unchanged for future
     reference
 
-### Automate Bacterial Variant Analysis
+------------------------------------------------------------------------
 
-Integrating all steps—quality control, alignment and post-alignment
-processing, variant calling, variant annotation, and effect
-prediction—into a single bash script creates a comprehensive, end-to-end
-bacterial variant analysis pipeline. The one script to rule them all.
+### Automate the entire Bacterial variant analysis process
+
+Integrating all steps of quality control, alignment and post-alignment
+processing, variant calling, variant annotation, and effect prediction
+into a single bash script (automate_variant_analysis.sh) creates a
+comprehensive, end-to-end bacterial variant analysis pipeline. The one
+script to rule them all.
 
     #!/bin/bash
     set -euo pipefail
@@ -1775,6 +1773,10 @@ bacterial variant analysis pipeline. The one script to rule them all.
     echo "Check snpEff summary files: in $annotation_dir"
     echo "=============Variant Analysis Completed==============="
 
+Run the above script using the command
+`bash automate_variant_analysis.sh`. This script should run successfully
+after the `Installation/setup` stage.
+
 ------------------------------------------------------------------------
 
 #### Tips to improve the bacterial variant analysis custom pipeline
@@ -1793,6 +1795,27 @@ analysis pipeline, consider making the following improvements.
 3.  **Adopt workflow management tools**. Consider using workflow
     managers like `Snakemake` or `Nextflow`. These tools can be used to
     create reproducible and scalable data analysis pipelines.
+
+------------------------------------------------------------------------
+
+#### Common variant analysis tools
+
+1.  [**Snippy**](https://github.com/tseemann/snippy). A fast and
+    user-friendly pipeline tailored for bacterial variant calling
+2.  [**Bactopia**](https://github.com/bactopia/bactopia). A pipeline for
+    the complete analysis of bacterial genomes
+3.  [**Tormes**](https://github.com/nmquijada/tormes). A pipeline for
+    whole bacterial genome analysis
+
+------------------------------------------------------------------------
+
+#### Have questions or need assistance?
+
+If you need help or have any queries regarding this tutorial or
+pipeline(s), please don’t hesitate to reach out: \* Email:
+<amjuliusokwir@gmail.com> \* GitHub Issues: Report issues or suggest
+improvements
+[here](https://github.com/okwir-julius/variant_analysis/issues).
 
 ------------------------------------------------------------------------
 
