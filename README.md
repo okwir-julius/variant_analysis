@@ -1812,13 +1812,61 @@ analysis pipeline, consider making the following improvements.
 #### Have questions or need assistance?
 
 If you need help or have any queries regarding this tutorial or
-pipeline(s), please don’t hesitate to reach out: \* Email:
-<amjuliusokwir@gmail.com> \* GitHub Issues: Report issues or suggest
-improvements
-[here](https://github.com/okwir-julius/variant_analysis/issues).
+pipeline, please don’t hesitate to reach out:
+
+- Email: <amjuliusokwir@gmail.com>
+- GitHub Issues: Report issues or suggest improvements
+  [here](https://github.com/okwir-julius/variant_analysis/issues).
 
 ------------------------------------------------------------------------
 
 ## References
 
-1.  
+1.  Andrews, S. (2010). FastQC: A quality control tool for high
+    throughput sequence data. Retrieved March 4, 2025, from
+    <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>
+
+2.  Broad Institute. (2019). Picard Toolkit \[Computer software\].
+    Retrieved February 18, 2025, from
+    <http://broadinstitute.github.io/picard/>
+
+3.  Cingolani, P., Platts, A., Wang, L. L., Coon, M., Nguyen, T., Wang,
+    L., Land, S. J., Lu, X., & Ruden, D. M. (2012). A program for
+    annotating and predicting the effects of single nucleotide
+    polymorphisms, SnpEff: SNPs in the genome of Drosophila melanogaster
+    strain w1118; iso-2; iso-3. Fly, 6(2), 80–92.
+    <https://doi.org/10.4161/fly.19695>
+
+4.  Cornish, A., & Guda, C. (2015). A comparison of variant calling
+    pipelines using Genome in a Bottle as a reference. BioMed Research
+    International, 2015, 456479. <https://doi.org/10.1155/2015/456479>
+
+5.  Danecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V.,
+    Pollard, M. O., Whitwham, A., Keane, T., McCarthy, S. A., Davies, R.
+    M., & Li, H. (2021). Twelve years of SAMtools and BCFtools.
+    GigaScience, 10(2), giab008.
+    <https://doi.org/10.1093/gigascience/giab008>
+
+6.  Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC:
+    Summarize analysis results for multiple tools and samples in a
+    single report. Bioinformatics, 32(19), 3047–3048.
+    <https://doi.org/10.1093/bioinformatics/btw354>
+
+7.  Krueger, F. (2012). Trim Galore! \[Computer software\]. Babraham
+    Bioinformatics. Retrieved February 4, 2025, from
+    <https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/>
+
+8.  Li, H., & Durbin, R. (2009). Fast and accurate short read alignment
+    with Burrows–Wheeler transform. Bioinformatics, 25(14), 1754–1760.
+    <https://doi.org/10.1093/bioinformatics/btp324>
+
+9.  Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer,
+    N., Marth, G., Abecasis, G., & Durbin, R. (2009). The Sequence
+    Alignment/Map format and SAMtools. Bioinformatics, 25(16),
+    2078–2079. <https://doi.org/10.1093/bioinformatics/btp352>
+
+10. Zverinova, S., & Guryev, V. (2022). Variant calling: Considerations,
+    practices, and developments. Human Mutation, 43(8), 976–985.
+    <https://doi.org/10.1002/humu.24311>
+
+------------------------------------------------------------------------
