@@ -1,5 +1,5 @@
 ---
-title: "Automated bacterial variant analysis: Build a custom bash pipeline for variant calling, annotation, and effect prediction"
+title: "Automate Bacterial Variant Analysis: Build a Custom Bash Pipeline for Variant Calling, Annotation, and Effect Prediction"
 output: github_document
 ---
 
@@ -748,6 +748,7 @@ Run the script using the command `bash automate_ann.effect.sh`.
 ---
 
 ##### Output
+
 ```{bash}
 annotation/                          # Directory for variant annotation outputs and database
 ├── ann_called_variants.vcf          # Final annotated VCF file with predicted variant effects
@@ -767,7 +768,9 @@ snpEff HTML report sections from variant annotation and effect prediction.
 ![](images/snpEff_summary.png)
 
 ![](images/variants_summary.png)
+
 ---
+
 
 ### Step 3: Filter variants of interest with BCFtools
 BCFtools provides multiple filtering options to extract specific **high-confidence or functionally relevant** variants as per the objectives of your project/research.
